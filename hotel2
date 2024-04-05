@@ -1,0 +1,191 @@
+using System;
+using System.Collections.Generic;
+
+namespace ass
+{
+    public class HelloWorld
+    {
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Try programiz.pro");
+            Guest pedo = new Guest("Satan", 1234567890, "Address 123", "pedo@gmail.com", "212", "2212pass");
+            Receptionist recept = new Receptionist("Satan", 1234567890, "ASD-122", "DADA", "DA", "DADA");
+            Hotel shit = new Hotel("VOLCANO", "SATANWORLD");
+            Room roomz = new Room(true, StyleRoom.KingRoom, 2122, 2);
+            HotelSystem idk = new HotelSystem();
+            idk.AddRoom(roomz);
+            idk.DisplayAvailableRooms();
+        }
+    }
+
+    public class User
+    {
+        private static int s_ID = 1234;
+        string ID { get; set; }
+        string Password { get; set; }
+
+        string Name { get; set; }
+        int Phone { get; set; }
+        string Address { get; set; }
+        string Email { get; set; }
+        public User(string name, int phone, string address, string email, string id, string password)
+        {
+            ID = s_ID++.ToString();
+            Password = password;
+            Email = email;
+            Address = address;
+            Name = name;
+            Phone = phone;
+        }
+        public virtual string GetDetails()
+        {
+            return $"Name:{Name}\tPhone{Phone}\tAddress{Address}\tEmail{Email}\tID{ID}\tPassword{Password}";
+        }
+
+        public void BookRoom(Room room)
+        {
+            room.BookRoom();
+        }
+        public void leaveRoom(Room room)
+        {
+            room.leaveRoom();
+        }
+    }
+
+    public class Guest : User
+    {
+        private static int Counter = 0;
+        int CountRooms { get; set; }
+        public Guest(string name, int phone, string address, string email, string id, string password) : base(name, phone, address, email, id, password)
+        {
+            CountRooms = Counter++;
+        }
+    }
+
+    public class Receptionist : User
+    {
+        public Receptionist(string name, int phone, string address, string email, string id, string password) : base(name, phone, address, email, id, password)
+        {
+
+        }
+    }
+
+    public enum StyleRoom
+    {
+        KingRoom,
+        SmallRoom,
+        LargeRoom
+    }
+
+    public class Room
+    {
+        int DurationDays { get; set; }
+        int Price { get; set; }
+        bool IsAvailable { get; set; }
+        StyleRoom StyleRoom { get; set; }
+        public Room(bool isAvailable, StyleRoom styleRoom, int price, int durationDays)
+        {
+            Price = price;
+            IsAvailable = isAvailable;
+            this.StyleRoom = styleRoom; // Update this line
+            DurationDays = durationDays;
+        }
+
+        public string GetDetails()
+        {
+            return $"Style:{StyleRoom}\tPrice:{Price}\tIsAvailable:{IsAvailable}\tDurationInDays:{DurationDays}";
+        }
+
+        public void BookRoom()
+        {
+            IsAvailable = false;
+        }
+        public void leaveRoom()
+        {
+            IsAvailable = true;
+        }
+    }
+
+    public class Hotel : HotelSystem
+    {
+        string HotelName { get; set; }
+        string Location { get; set; }
+        public Hotel(string hotelName, string location)
+        {
+            HotelName = hotelName;
+            Location = location;
+        }
+        public string GetDetails()
+        {
+            return $"HotelName{HotelName} Location{Location}";
+        }
+        public void BookRoom(User user, Room room)
+        {
+            user.BookRoom(room);
+        }
+        public void LeaveRoom(User user, Room room)
+        {
+            user.leaveRoom(room);
+        }
+    }
+
+    public class HotelSystem
+    {
+        List<Room> AvailableRooms = new List<Room>();
+        List<Room> BookedRooms = new List<Room>();
+
+        public void AddRoom(Room room)
+        {
+            AvailableRooms.Add(room);
+        }
+        public void RemoveRoom(Room room)
+        {
+            AvailableRooms.Remove(room);
+        }
+
+        public void BookRoom(Hotel hotel, User user, Room room, Reservation reservation)
+        {
+            hotel.BookRoom(user, room);
+            reservation.GetDetails();
+
+        }
+        public void LeaveRoom(Hotel hotel, User user, Room room)
+        {
+            hotel.LeaveRoom(user, room);
+        }
+
+        public void DisplayAvailableRooms()
+        {
+            foreach (Room room in AvailableRooms)
+            {
+                Console.WriteLine($"Available Room are {room.GetDetails()}");
+            }
+        }
+        public void DisplayBookedRooms()
+        {
+            foreach (Room room in BookedRooms)
+            {
+                Console.WriteLine($"Booked Rooms : {room.GetDetails()}");
+            }
+        }
+
+    }
+
+    public class Reservation
+    {
+        int DurationInDays { get; set; }
+        DateTime EndDate { get; set; }
+        DateTime StartDate { get; set; }
+
+        public Reservation(int durationInDays, DateTime startDate, DateTime endDate)
+        {
+            DurationInDays = durationInDays;
+            EndDate = endDate;
+            StartDate = startDate;
+        }
+        public string GetDetails()
+        {
+            return $"DurationInDays{DurationInDays} EndDate:{EndDate} StartDate{StartDate}";
+        }
+    }
+}
